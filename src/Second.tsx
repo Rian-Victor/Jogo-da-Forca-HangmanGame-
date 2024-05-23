@@ -1,15 +1,11 @@
 import './App.css';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import GameWord from './Components/game-word';
 import { Link } from 'react-router-dom';
 import { HangmanDrawing } from './hangmandrawing';
 import Alura from '../src/assets/alura.png';
 import './Second.css';
 import { useWords } from './WordsContext';
-
-
-
-
 
 type GameHistory = {
   word: string;
@@ -23,6 +19,7 @@ const Second: React.FC = () => {
   function pickRandomWord() {
     return words[Math.floor(Math.random() * words.length)];
   }
+
   const [wordToGuess, setWordToGuess] = useState(pickRandomWord().toUpperCase());
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [gameOver, setGameOver] = useState(false);
@@ -31,12 +28,14 @@ const Second: React.FC = () => {
     return savedHistory ? JSON.parse(savedHistory) : [];
   });
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
   }, [gameHistory]);
 
   const incorrectLetters = guessedLetters.filter(
-    letter => !wordToGuess.toUpperCase().includes(letter)
+    letter => !wordToGuess.includes(letter)
   );
 
   const isLoser = incorrectLetters.length >= 10;
@@ -81,6 +80,12 @@ const Second: React.FC = () => {
     }
   }, [isWinner, isLoser, wordToGuess]);
 
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   const clearGameHistory = () => {
     localStorage.removeItem('gameHistory');
     setGameHistory([]);
@@ -89,16 +94,21 @@ const Second: React.FC = () => {
   return (
     <div className='pagetwo'>
       <header className='header'>
-        <img className='logo'src={Alura} />
+        <img className='logo' src={Alura} />
       </header>
       <main>
         <HangmanDrawing numberOfGuesses={incorrectLetters.length} />
-        <GameWord reveal={isLoser} wordToGuess={wordToGuess} guessedLetters={guessedLetters} />
+        <GameWord
+          reveal={isLoser}
+          wordToGuess={wordToGuess}
+          guessedLetters={guessedLetters}
+          focusInput={focusInput}
+        />
 
         <div className='erradas'>
-          <div id='erradas-span' style={{ display: 'flex', marginTop:'25px', width:'40%', gap: '40px',  marginBottom:'25px' }}>
+          <div id='erradas-span' style={{ display: 'flex', marginTop: '25px', width: '100%', gap: '40px', marginBottom: '25px' }}>
             {incorrectLetters.map((letter, index) => (
-              <span  key={index} style={{ color: '#495057', fontSize:'20px', flexWrap:'wrap',opacity:'0.7' }}>
+              <span key={index} style={{ color: '#495057', fontSize: '20px', flexWrap: 'wrap', opacity: '0.7' }}>
                 {letter}
               </span>
             ))}
@@ -107,23 +117,31 @@ const Second: React.FC = () => {
 
         {isLoser && <div className='result'>Você perdeu!</div>}
         {isWinner && <div className='result'>Você ganhou!</div>}
-        
+
+        <input
+          ref={inputRef}
+          style={{
+            position: 'absolute',
+            opacity: 0,
+            pointerEvents: 'none',
+          }}
+          type="text"
+        />
+
         <div className='button-segunda-container'>
           <button className='button-segunda' onClick={() => {
             setWordToGuess(pickRandomWord().toUpperCase());
-
             setGuessedLetters([]);
             setGameOver(false);
           }}>Novo Jogo
           </button>
           <Link to='/'>
-            <button className='button-segunda' id='btnseg'onClick={() => {
+            <button className='button-segunda' id='btnseg' style={{ textDecoration: 'none' }} onClick={() => {
               setGameOver(true);
               setWordToGuess(pickRandomWord().toUpperCase());
             }}>Desistir</button>
           </Link>
         </div>
-        
 
         {/* Histórico de Partidas */}
         <div className='historico-wrap'>
@@ -134,14 +152,8 @@ const Second: React.FC = () => {
                 {game.date} - {game.word} - {game.result}
               </li>
             ))}
-
-            
-            <button className='btn-hist' onClick={() => {
-              clearGameHistory();
-            }}> Limpar Histórico
-
-            </button>
           </ul>
+          <button className='btn-hist' onClick={clearGameHistory}>Limpar Histórico</button>
         </div>
       </main>
     </div>

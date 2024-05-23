@@ -37,11 +37,10 @@ main{
 .button-segunda{
     width: 330px;
     height: 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
+    position: relative;
+    padding: 0;
+    border: none;
+    
 }
 
 .button-segunda-container{
@@ -160,9 +159,9 @@ li{
 
 @media screen and (max-width: 430px) {
     .historico-wrap{
-        width: 100%;
+        width: 90%;
         flex-wrap: wrap;
-        top: 10%;
+        top: 15%;
         margin-left: 6%;
         position: relative;
         justify-content: center;
@@ -225,10 +224,11 @@ li{
     #erradas-span{
         flex-wrap: wrap;
         gap: 20px;
+        width: 100%;
     }
 
     .btn-hist{
-        width: 90%;
+        width: 100%;
        
     }
 

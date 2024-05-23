@@ -42,6 +42,7 @@ input::placeholder{
     margin-top: 150px;
     display: flex;
     gap: 25px;
+    
 }
 
 .button-third{
@@ -52,6 +53,7 @@ input::placeholder{
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    border: none;
 }
 
 #add-section {
@@ -93,6 +95,7 @@ input::placeholder{
   
   #add-section .buttons-container {
     display: flex;
+
   }
 
   #cancel-btn{
