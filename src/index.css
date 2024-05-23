@@ -1,0 +1,12 @@
+:root{
+    --dark-blue: #0A3871;
+    --gray: #495057;
+    --inter: 'Inter', 'sans-serif';
+    --white: #fff;
+    --light-blue: #F3F5FC;
+}
+
+*{
+    font-family: 'Inter';
+    background-color: var(--light-blue);
+}
