@@ -28,7 +28,7 @@ const Second: React.FC = () => {
     return savedHistory ? JSON.parse(savedHistory) : [];
   });
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
@@ -41,7 +41,7 @@ const Second: React.FC = () => {
   const isLoser = incorrectLetters.length >= 10;
   const isWinner = wordToGuess
     .split("")
-    .every(letter => guessedLetters.includes(letter.toUpperCase()))
+    .every(letter => guessedLetters.includes(letter.toUpperCase()));
 
   const addGuessedLetter = useCallback(
     (letter: string) => {
@@ -86,6 +86,15 @@ const Second: React.FC = () => {
     }
   };
 
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const inputText = e.currentTarget.innerText.toUpperCase();
+    const lastChar = inputText.slice(-1);
+    if (!gameOver && lastChar.match(/^[A-Z]$/) && !guessedLetters.includes(lastChar)) {
+      addGuessedLetter(lastChar);
+      e.currentTarget.innerText = ''; // Clear the input field after processing
+    }
+  };
+
   const clearGameHistory = () => {
     localStorage.removeItem('gameHistory');
     setGameHistory([]);
@@ -106,7 +115,7 @@ const Second: React.FC = () => {
         />
 
         <div className='erradas'>
-          <div id='erradas-span' style={{ display: 'flex', marginTop: '25px', width: '100%', gap: '40px', marginBottom: '25px' }}>
+          <div id='erradas-span' style={{ display: 'flex', marginTop: '25px', width: '40%', gap: '40px', marginBottom: '25px' }}>
             {incorrectLetters.map((letter, index) => (
               <span key={index} style={{ color: '#495057', fontSize: '20px', flexWrap: 'wrap', opacity: '0.7' }}>
                 {letter}
@@ -118,15 +127,18 @@ const Second: React.FC = () => {
         {isLoser && <div className='result'>Você perdeu!</div>}
         {isWinner && <div className='result'>Você ganhou!</div>}
 
-        <input
+        <div
           ref={inputRef}
+          contentEditable
           style={{
             position: 'absolute',
             opacity: 0,
             pointerEvents: 'none',
+            height: '0',
+            width: '0',
           }}
-          type="text"
-        />
+          onInput={handleInput}
+        ></div>
 
         <div className='button-segunda-container'>
           <button className='button-segunda' onClick={() => {
