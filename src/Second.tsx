@@ -83,8 +83,16 @@ const Second: React.FC = () => {
   const focusInput = () => {
     if (inputRef.current) {
       inputRef.current.focus();
+      const selection = window.getSelection();
+      if (selection) {
+        const range = document.createRange();
+        range.selectNodeContents(inputRef.current);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
     }
   };
+  
 
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const inputText = e.currentTarget.innerText.toUpperCase();
