@@ -97,7 +97,7 @@ const Second: React.FC = () => {
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const inputText = e.currentTarget.innerText.toUpperCase();
     const lastChar = inputText.slice(-1);
-    if (!gameOver && lastChar.match(/^[A-Z]$/) && !guessedLetters.includes(lastChar)) {
+    if (!gameOver && lastChar.match(/^[a-z]$/) && !guessedLetters.includes(lastChar)) {
       addGuessedLetter(lastChar);
       e.currentTarget.innerText = ''; // Clear the input field after processing
     }
